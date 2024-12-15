@@ -43,3 +43,18 @@ pub fn plot_predictions(
     root.present()?;
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_plot_predictions() {
+        let imdb_ratings = vec![1.0, 2.0, 3.0];
+        let meta_scores = vec![10.0, 20.0, 30.0];
+        let predictions = vec![vec![10.0, 20.0, 30.0], vec![12.0, 22.0, 32.0]];
+        let labels = vec!["Model 1", "Model 2"];
+        let result = plot_predictions(&imdb_ratings, &meta_scores, &predictions, &labels, "test_plot.png");
+        assert!(result.is_ok(), "Plotting function should not panic");
+    }
+}

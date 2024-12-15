@@ -20,3 +20,23 @@ pub fn load_dataset(file_path: &str) -> Result<(Vec<f64>, Vec<f64>), Box<dyn Err
     }
     Ok((imdb_ratings, meta_scores))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_load_dataset() {
+        let result = load_dataset("test_data.csv");
+        assert!(result.is_ok(), "Dataset failed to load");
+        let (imdb_ratings, meta_scores) = result.unwrap();
+        assert_eq!(imdb_ratings.len(), meta_scores.len(), "Dataset lengths do not match");
+        assert!(imdb_ratings.len() > 0, "Dataset is empty");
+    }
+
+    #[test]
+    fn test_invalid_dataset() {
+        let result = load_dataset("non_existent.csv");
+        assert!(result.is_err(), "Invalid dataset should return an error");
+    }
+}

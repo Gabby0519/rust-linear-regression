@@ -45,3 +45,42 @@ pub fn predict_polynomial(imdb_ratings: &[f64], meta_scores: &[f64], degree: usi
         * y_vector;
     (x_matrix * coefficients).as_slice().to_vec()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_fit_linear() {
+        let imdb_ratings = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let meta_scores = vec![2.0, 4.0, 6.0, 8.0, 10.0];
+        let (slope, intercept) = fit_linear(&imdb_ratings, &meta_scores);
+        assert!((slope - 2.0).abs() < 1e-6, "Incorrect slope");
+        assert!((intercept - 0.0).abs() < 1e-6, "Incorrect intercept");
+    }
+
+    #[test]
+    fn test_predict_linear() {
+        let imdb_ratings = vec![1.0, 2.0, 3.0];
+        let slope = 2.0;
+        let intercept = 1.0;
+        let predictions = predict_linear(&imdb_ratings, slope, intercept);
+        assert_eq!(predictions, vec![3.0, 5.0, 7.0], "Linear predictions are incorrect");
+    }
+
+    #[test]
+    fn test_predict_polynomial() {
+        let imdb_ratings = vec![1.0, 2.0, 3.0];
+        let meta_scores = vec![1.0, 4.0, 9.0];
+        let predictions = predict_polynomial(&imdb_ratings, &meta_scores, 2);
+        assert!((predictions[0] - 1.0).abs() < 1e-6, "Polynomial prediction is incorrect");
+    }
+
+    #[test]
+    fn test_calculate_r_squared() {
+        let actual = vec![2.0, 4.0, 6.0];
+        let predicted = vec![2.0, 4.0, 6.0];
+        let r2 = calculate_r_squared(&actual, &predicted);
+        assert!((r2 - 1.0).abs() < 1e-6, "R² should be 1.0 for perfect predictions");
+    }
+}
